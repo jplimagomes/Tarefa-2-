@@ -1,0 +1,70 @@
+################### TAREFA 1 DE CIÊNCIA DE DADOS #####################
+
+
+## Instalando pacote para coleta de dados
+
+remotes::install_github('wilsonfreitas/rbcb')
+
+
+## Carregando o pacote
+
+library(rbcb)
+
+
+## Download das expectativas de inflação para os próximos 12 meses
+
+market_expect <- get_market_expectations("inflation-12-months",
+                                         "IPCA", 
+                                         start_date = "2005-01-01", 
+                                         end_date = "2022-02-16")
+
+head(market_expect)
+
+tail(market_expect)
+
+names(market_expect)
+
+
+## Removendo algumas colunas do dataframe
+
+market_expect <- market_expect[,-c(7:10)]
+
+View(market_expect)
+
+
+## Removendo do dataframe as linhas correspondentes às medianas não-suavizadas
+
+market_exp_suav <- market_expect[!grepl("N", market_expect$Suavizada),]
+
+print(market_exp_suav)
+
+
+## Plotando o gráfico da média das expectativas de inflação
+
+names(market_exp_suav)
+
+library(ggplot2)
+
+ggplot(market_exp_suav, aes(x = Data, y = Media)) +
+  geom_line(col="darkblue") +
+  labs(x = "Ano", y = "Média (%)", title = "Média diária das expectativas de
+       inflação para os próximos 12 meses")
+
+## Download da taxa de variação anual do PIB
+
+var_real_pib <- get_series(c(var_pib = 7326), last = 15)
+
+View(var_real_pib)
+
+names(var_real_pib)
+
+
+## Plotando gráfico de barras da variação real anual do PIB
+
+ggplot(var_real_pib, aes(x = date, y = var_pib)) +
+  geom_col(col="yellow") +
+  labs(x = "Ano", y = "Var real do PIB (%)", title = "Variação anual do
+       PIB real (2006 - 2020)")
+
+
+##################################################################
